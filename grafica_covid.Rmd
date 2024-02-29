@@ -1,0 +1,37 @@
+---
+title: "Grafico tema 3"
+author: "Ferran Medina Mompó, Rubén Sierra Punter y Hugo Lucas Mateos"
+date: "2024-02-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+# Importamos los datos
+data <- read_csv("data/owid-covid-data.csv")
+
+# Seleccionamos los países en los que estamos interesados
+paises_deseados <- c("Spain", "Germany", "Japan", "United States", "Canada", "France", "Italy", "United Kingdom")
+df_1 <- data %>%
+  filter(location %in% paises_deseados)
+
+# Crear la gráfica
+grafica_covid <- ggplot(df_1, aes(x = date, y = total_deaths, color = location)) + 
+  geom_line() +
+  labs(title = "Total de muertes por COVID-19 en varios países",
+       x = "Fecha",
+       y = "Total de muertes") +
+  theme_minimal()
+grafica_covid
+
+```
+

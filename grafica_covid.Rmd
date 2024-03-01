@@ -47,5 +47,15 @@ colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan"
               "France" = "orange4", "Spain" = "black")
 
 
+# Filtrar datos para países de interés
+datos_paises <- data %>%
+  filter(location %in% paises) %>%
+  select(date, location, new_deaths_smoothed_per_million)
+
+
+# Filtrar datos específicamente para España
+datos_espana <- data %>%
+  filter(location == "Spain") %>%
+  select(date, location, new_deaths_smoothed_per_million)
 
 ```

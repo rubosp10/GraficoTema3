@@ -9,8 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-
 ```{r}
 library(readr)
 library(dplyr)
@@ -35,3 +33,19 @@ grafica_covid
 
 ```
 
+```{r}
+library(ggplot2)
+library(plotly)
+library(dplyr)
+
+# Definir países de interés
+paises <- c("United States", "Italy", "France", "Germany", "Canada", "Japan", "United Kingdom", "Spain")
+
+# Colores para cada país
+colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", 
+              "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", 
+              "France" = "orange4", "Spain" = "black")
+
+
+
+```

@@ -25,7 +25,11 @@ df_1 <- data %>%
 # Crear la gráfica
 grafica_covid <- ggplot(df_1, aes(x = date, y = total_deaths, color = location)) + 
   geom_line() +
-  labs(title = "Total de muertes por COVID-19 en varios países",
+  
+  #Implementamos función para que la linea de España sea más gruesa y de color rojo.
+  
+  geom_line(data=subset(df_1,location=="Spain"),aes(group=location), color="red", size=1.5)
+  labs(title = "Total de muertes por COVID-19 en varios países (Grupo R)",
        x = "Fecha",
        y = "Total de muertes") +
   theme_minimal()

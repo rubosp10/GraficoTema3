@@ -57,18 +57,35 @@ paises <- c("United States", "Italy", "France", "Germany", "Canada", "Japan", "U
 # Colores para cada país
 colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", 
               "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", 
-              "France" = "orange4", "Spain" = "black")
+              "France" = "orange4", "Spain" = "red")
 
 
 # Filtrar datos para países de interés
-datos_paises <- data %>%
+df_1 <- data %>%
   filter(location %in% paises) %>%
   select(date, location, new_deaths_smoothed_per_million)
 
 
-# Filtrar datos específicamente para España
-datos_espana <- data %>%
+# Filtrar datos específicamente para España, ya que este país debe tener unas 
+# características distintas a los demás paises (color y grosor).
+
+df_esp <- data %>%
   filter(location == "Spain") %>%
   select(date, location, new_deaths_smoothed_per_million)
+
+# Crear gráfico 
+
+grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color = location)) +
+  geom_line(size = 0.55) +
+  geom_line(data = df_esp, size = 1.25) +
+  scale_color_manual(values = colores) +
+  ylim(0,20)+
+  theme(legend.position = "none") +
+  scale_y_continuous(limits= c(0,20)) +
+  scale_x_date(date_breaks = "183 day", date_labels =  "%b %d %Y") +
+  labs(y = "Número de muertes por millón de personas", x = "Fecha", 
+       title = "Nuevas muertes diarias por COVID-19 por millón de personas")
+
+grafico
 
 ```

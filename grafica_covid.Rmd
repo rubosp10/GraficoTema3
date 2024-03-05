@@ -34,28 +34,42 @@ grafica_covid
 ```
 
 ```{r}
-library(ggplot2)
-library(plotly)
+library(readr)
 library(dplyr)
+library(ggplot2)
 
-# Definir países de interés
-paises <- c("United States", "Italy", "France", "Germany", "Canada", "Japan", "United Kingdom", "Spain")
+# Importamos los datos
+data <- read_csv("data/owid-covid-data.csv")
+
+# Seleccionamos los países en los que estamos interesados
+paises_deseados <- c("Spain", "Germany", "Japan", "United States", "Canada", "France", "Italy", "United Kingdom")
 
 # Colores para cada país
 colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", 
               "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", 
               "France" = "orange4", "Spain" = "black")
 
-
 # Filtrar datos para países de interés
-datos_paises <- data %>%
-  filter(location %in% paises) %>%
+df_1 <- data %>%
+  filter(location %in% paises_deseados) %>%
   select(date, location, new_deaths_smoothed_per_million)
-
 
 # Filtrar datos específicamente para España
-datos_espana <- data %>%
+df_esp <- data %>%
   filter(location == "Spain") %>%
   select(date, location, new_deaths_smoothed_per_million)
+
+# Crear gráfico interactivo
+grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color = location)) +
+  geom_line(size = 0.55) +
+  geom_line(data = df_esp, size = 1.25) +
+  scale_color_manual(values = colores) +
+  theme(legend.position = "none") +
+  scale_y_continuous(breaks = 11) +
+  scale_x_date(date_breaks = "183 day", date_labels =  "%b %d %Y") +
+  labs(y = "Número de muertes por millón de personas", x = "Fecha", 
+       title = "Nuevas muertes diarias por COVID-19 por millón de personas")
+
+grafico
 
 ```

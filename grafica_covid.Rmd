@@ -61,7 +61,7 @@ paises_deseados <- c("Spain", "Germany", "Japan", "United States", "Canada", "Fr
 # Colores para cada país
 colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", 
               "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", 
-              "France" = "orange4", "Spain" = "black")
+              "France" = "orange4", "Spain" = "red")
 
 # Filtrar datos para países de interés
 df_1 <- data %>%

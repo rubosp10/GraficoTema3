@@ -1,0 +1,59 @@
+---
+title: "Grafico tema 3"
+author: "Ferran Medina Mompó, Rubén Sierra Punter y Hugo Lucas Mateos"
+date: "2024-02-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+# Importamos los datos
+data <- read_csv("data/owid-covid-data.csv")
+
+# Seleccionamos los países en los que estamos interesados
+paises_deseados <- c("Spain", "Germany", "Japan", "United States", "Canada", "France", "Italy", "United Kingdom")
+
+
+# Colores para cada país
+colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", 
+              "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", 
+              "France" = "orange4", "Spain" = "red")
+
+# Filtrar datos para países de interés
+df_1 <- data %>%
+  filter(location %in% paises_deseados) %>%
+  select(date, location, new_deaths_smoothed_per_million)
+
+# Filtrar datos específicamente para España
+df_esp <- data %>%
+  filter(location == "Spain") %>%
+  select(date, location, new_deaths_smoothed_per_million)
+
+
+
+# Crear gráfico 
+
+grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color = location)) +
+  geom_line(size = 0.55) +
+  geom_line(data = df_esp, size = 1.25) +
+  scale_color_manual(values = colores) +
+  theme(legend.position = "none") +
+  scale_y_continuous(limit = c(0,20)) +
+  scale_x_date(date_breaks = "183 day", date_labels =  "%b %d %Y") +
+  labs(y = "Número de muertes por millón de personas", x = "Fecha", 
+       title = "Nuevas muertes diarias por COVID-19 por millón de personas")
+
+grafico  +
+  theme_minimal()
+
+```
+

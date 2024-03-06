@@ -19,43 +19,6 @@ data <- read_csv("data/owid-covid-data.csv")
 
 # Seleccionamos los países en los que estamos interesados
 paises_deseados <- c("Spain", "Germany", "Japan", "United States", "Canada", "France", "Italy", "United Kingdom")
-df_1 <- data %>%
-  filter(location %in% paises_deseados)
-
-# Crear la gráfica
-grafica_covid <- ggplot(df_1, aes(x = date, y = total_deaths, color = location)) + 
-  geom_line() +
-
-  #Implementamos función para que la linea de España sea más gruesa y de color rojo.
-  
-  geom_line(data=subset(df_1,location=="Spain"),aes(group=location), color="red", size=1.5)
-  labs(title = "Total de muertes por COVID-19 en varios países (Grupo R)",
-       x = "Fecha",
-       y = "Total de muertes") +
-  theme_minimal()
-  
-  #Establecemos el periodo de tiempo que queremos que nos muestre.
-  lim <- as.Date(c("2020-02-13", "2024-03-04"))
-  
-  #Le decimos el formato en el que queremos poner la fecha dentro de la gráfica.
-  
-  grafica_covid + scale_x_date(limits = lim, date_labels = "%b %d, %Y")
-
-
-
-
-```
-
-```{r}
-library(readr)
-library(dplyr)
-library(ggplot2)
-
-# Importamos los datos
-data <- read_csv("data/owid-covid-data.csv")
-
-# Seleccionamos los países en los que estamos interesados
-paises_deseados <- c("Spain", "Germany", "Japan", "United States", "Canada", "France", "Italy", "United Kingdom")
 
 
 # Colores para cada país
@@ -87,6 +50,6 @@ grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color
   labs(y = "Número de muertes por millón de personas", x = "Fecha", 
        title = "Nuevas muertes diarias por COVID-19 por millón de personas")
 
-grafico
+grafico + theme_minimal() + theme(axis.text.x = element_text(size = 6))
 
 ```

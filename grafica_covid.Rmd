@@ -74,6 +74,9 @@ subtitle="7-day rolling average. For some countries the number of confirmed deat
 
 #Cambiamos el tamaño de las fechas de la variable x para que no se superpongan.
 
-grafico + theme(axis.text.x = element_text(size = 6))
+grafico <-grafico + theme(axis.text.x = element_text(size = 6))
+#Guardamos el grafico y lo hacemos interactivo
+ggsave("grafico_covid.jpeg", plot = grafico, width = 10, height = 8, units = "in")
+#ggplotly(grafico)
 
 ```

@@ -16,67 +16,48 @@ library(ggplot2)
 library(plotly)
 library(dplyr)
 
+# Importar los datos
+data <- read.csv("data/owid-covid-data.csv")
+
+# Convertir la columna 'date' a formato de fecha (Date)
+data$date <- as.Date(data$date)
+
 # Definir países de interés
 paises <- c("United States", "Italy", "France", "Germany", "Canada", "Japan", "United Kingdom", "Spain")
 
 # Colores para cada país
 colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", "France" = "orange4", "Spain" = "red")
 
-
 # Filtrar datos para países de interés
 df_1 <- data %>%
   filter(location %in% paises) %>%
   select(date, location, new_deaths_smoothed_per_million)
 
-
-# Filtrar datos específicamente para España, ya que este país debe tener unas 
-# características distintas a los demás paises (color y grosor).
-
+# Filtrar datos específicamente para España
 df_esp <- data %>%
   filter(location == "Spain") %>%
   select(date, location, new_deaths_smoothed_per_million)
 
-# Crear gráfico 
-
+# Crear gráfico
 grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color = location)) +
-  
-#Especificamos el tipo de linea de fondo del gráfico y donde queremos que esté.
-  
-geom_hline(yintercept=c(2,4,6,8,10,12,14,16,18), color="gray", linetype="dotted")+
+  geom_hline(yintercept=c(2,4,6,8,10,12,14,16,18), color="gray", linetype="dotted") +
+  geom_line(size = 0.55) +
+  geom_line(data = df_esp, size = 1.25) +
+  scale_color_manual(values = colores) +
+  theme(legend.position = "none") +
+  theme_classic() +
+  theme(axis.line.x = element_blank(), axis.line.y=element_blank()) +
+  scale_y_continuous(limits=c(0,NA), breaks= seq(0,18, by=2)) +
+  scale_x_date(date_breaks = "183 days", date_labels =  "%b %d, %Y") +
+  labs(y = "Número de muertes por millón de personas", x = "Fecha", 
+       title = "Daily new confirmed COVID-19 deaths per million people (Grupo R)",
+       subtitle="7-day rolling average. For some countries the number of confirmed deaths is much lower\nthan the true number of deaths. This is because of limited  testing and challenges in\nthe attribution of the cause of death.") +
+  theme(axis.text.x = element_text(size = 6))
 
-#Especificamos el grosor de las lineas de los diferentes paises, todos con el mismo grosor, menos España que tendrá más.
-  
-geom_line(size = 0.55) +
-geom_line(data = df_esp, size = 1.25) +
-  
+grafico
+# Guardar el gráfico como PNG
+ggsave("grafico_covid.png", plot = grafico, width = 10, height = 8, units = "in")
 
-scale_color_manual(values = colores) +
-theme(legend.position = "none") +
-theme_classic()+
-
-#Eliminamos las lineas de fondo que crea el gráfico automáticamente.
-  
-theme(axis.line.x = element_blank(), axis.line.y=element_blank())+
-scale_y_continuous(limits=c(0,NA), breaks= seq(0,18, by=2)) +
-
-#Especificamos la forma en la que queremos que estén las fechas y la disposición
-#de las fechas para que aparezcan fechas lo más similares posibles a las del 
-#gráfico original.
-  
-scale_x_date(date_breaks = "183 days", date_labels =  "%b %d, %Y") +
-  
-#Ponemos los titulos y subtitulos exactamente igual que en la gráfica original
-#y decimos a qué corresponden las variables x e y.
-  
-labs(y = "Número de muertes por millón de personas", x = "Fecha", 
-title = "Daily new confirmed COVID-19 deaths per million people (Grupo R)",
-subtitle="7-day rolling average. For some countries the number of confirmed deaths is much lower\nthan the true number of deaths. This is because of limited  testing and challenges in\nthe attribution of the cause of death.")
-
-#Cambiamos el tamaño de las fechas de la variable x para que no se superpongan.
-
-grafico <-grafico + theme(axis.text.x = element_text(size = 6))
-#Guardamos el grafico y lo hacemos interactivo
-ggsave("grafico_covid.jpeg", plot = grafico, width = 10, height = 8, units = "in")
-#ggplotly(grafico)
+ggplotly(grafico)
 
 ```

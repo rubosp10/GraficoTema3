@@ -9,42 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-library(readr)
-library(dplyr)
-library(ggplot2)
 
-# Importamos los datos
-data <- read_csv("data/owid-covid-data.csv")
-
-# Seleccionamos los países en los que estamos interesados
-paises_deseados <- c("Spain", "Germany", "Japan", "United States", "Canada", "France", "Italy", "United Kingdom")
-df_1 <- data %>%
-  filter(location %in% paises_deseados)
-
-# Crear la gráfica
-grafica_covid <- ggplot(df_1, aes(x = date, y = total_deaths, color = location)) + 
-  geom_line() +
-
-  #Implementamos función para que la linea de España sea más gruesa y de color rojo.
-  
-  geom_line(data=subset(df_1,location=="Spain"),aes(group=location), color="red", size=1.5)
-  labs(title = "Total de muertes por COVID-19 en varios países (Grupo R)",
-       x = "Fecha",
-       y = "Total de muertes") +
-  theme_minimal()
-  
-  #Establecemos el periodo de tiempo que queremos que nos muestre.
-  lim <- as.Date(c("2020-02-13", "2024-03-04"))
-  
-  #Le decimos el formato en el que queremos poner la fecha dentro de la gráfica.
-  
-  grafica_covid + scale_x_date(limits = lim, date_labels = "%b %d, %Y")
-
-
-
-
-```
 
 ```{r}
 library(ggplot2)
@@ -55,9 +20,7 @@ library(dplyr)
 paises <- c("United States", "Italy", "France", "Germany", "Canada", "Japan", "United Kingdom", "Spain")
 
 # Colores para cada país
-colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", 
-              "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", 
-              "France" = "orange4", "Spain" = "red")
+colores <- c("United States" = "purple1", "United Kingdom" = "deeppink", "Japan" = "azure4", "Canada" = "darkred", "Italy" = "darkturquoise", "Germany" = "chartreuse4", "France" = "orange4", "Spain" = "red")
 
 
 # Filtrar datos para países de interés
@@ -76,20 +39,41 @@ df_esp <- data %>%
 # Crear gráfico 
 
 grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color = location)) +
-  geom_hline(yintercept=c(2,4,6,8,10,12,14,16,18), color="gray", linetype="dotted")+
   
-  geom_line(size = 0.55) +
-  geom_line(data = df_esp, size = 1.25) +
-  scale_color_manual(values = colores) +
-  theme(legend.position = "none") +
-  theme_classic()+
-  theme(axis.line.x = element_blank(), axis.line.y=element_blank())+
-  scale_y_continuous(limits=c(0,NA), breaks= seq(0,18, by=2)) +
+#Especificamos el tipo de linea de fondo del gráfico y donde queremos que esté.
   
-  scale_x_date(date_breaks = "40 weeks", date_labels =  "%b %d %Y") +
-  labs(y = "Número de muertes por millón de personas", x = "Fecha", 
-       title = "Nuevas muertes diarias por COVID-19 por millón de personas")
+geom_hline(yintercept=c(2,4,6,8,10,12,14,16,18), color="gray", linetype="dotted")+
 
-grafico
+#Especificamos el grosor de las lineas de los diferentes paises, todos con el mismo grosor, menos España que tendrá más.
+  
+geom_line(size = 0.55) +
+geom_line(data = df_esp, size = 1.25) +
+  
+
+scale_color_manual(values = colores) +
+theme(legend.position = "none") +
+theme_classic()+
+
+#Eliminamos las lineas de fondo que crea el gráfico automáticamente.
+  
+theme(axis.line.x = element_blank(), axis.line.y=element_blank())+
+scale_y_continuous(limits=c(0,NA), breaks= seq(0,18, by=2)) +
+
+#Especificamos la forma en la que queremos que estén las fechas y la disposición
+#de las fechas para que aparezcan fechas lo más similares posibles a las del 
+#gráfico original.
+  
+scale_x_date(date_breaks = "183 days", date_labels =  "%b %d, %Y") +
+  
+#Ponemos los titulos y subtitulos exactamente igual que en la gráfica original
+#y decimos a qué corresponden las variables x e y.
+  
+labs(y = "Número de muertes por millón de personas", x = "Fecha", 
+title = "Daily new confirmed COVID-19 deaths per million people (Grupo R)",
+subtitle="7-day rolling average. For some countries the number of confirmed deaths is much lower\nthan the true number of deaths. This is because of limited  testing and challenges in\nthe attribution of the cause of death.")
+
+#Cambiamos el tamaño de las fechas de la variable x para que no se superpongan.
+
+grafico + theme(axis.text.x = element_text(size = 6))
 
 ```

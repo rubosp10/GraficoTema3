@@ -76,13 +76,17 @@ df_esp <- data %>%
 # Crear gráfico 
 
 grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color = location)) +
+  geom_hline(yintercept=c(2,4,6,8,10,12,14,16,18), color="gray", linetype="dotted")+
+  
   geom_line(size = 0.55) +
   geom_line(data = df_esp, size = 1.25) +
   scale_color_manual(values = colores) +
-  ylim(0,20)+
   theme(legend.position = "none") +
-  scale_y_continuous(limits= c(0,20)) +
-  scale_x_date(date_breaks = "183 day", date_labels =  "%b %d %Y") +
+  theme_classic()+
+  theme(axis.line.x = element_blank(), axis.line.y=element_blank())+
+  scale_y_continuous(limits=c(0,NA), breaks= seq(0,18, by=2)) +
+  
+  scale_x_date(date_breaks = "40 weeks", date_labels =  "%b %d %Y") +
   labs(y = "Número de muertes por millón de personas", x = "Fecha", 
        title = "Nuevas muertes diarias por COVID-19 por millón de personas")
 

@@ -53,7 +53,7 @@ grafico <- ggplot(df_1, aes(x = date, y = new_deaths_smoothed_per_million, color
        title = "Nuevas muertes diarias por COVID-19 por millón de personas")
 
 grafico  +
-  theme_minimal()
+  theme_minimal() + theme(axis.text.x = element_text(size = 6))
 
 ```
 
